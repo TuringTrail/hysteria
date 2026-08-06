@@ -32,6 +32,7 @@ CORE_SRC_DIR = "./core"
 EXTRAS_SRC_DIR = "./extras"
 APP_SRC_DIR = "./app"
 APP_SRC_CMD_PKG = "github.com/apernet/hysteria/app/v2/cmd"
+TRAFFICLOGGER_PKG = "github.com/apernet/hysteria/extras/v2/trafficlogger"
 
 MODULE_SRC_DIRS = [CORE_SRC_DIR, EXTRAS_SRC_DIR, APP_SRC_DIR]
 
@@ -253,6 +254,8 @@ def cmd_build(pprof=False, release=False, race=False):
         "-X",
         APP_SRC_CMD_PKG + ".appVersion=" + app_version,
         "-X",
+        TRAFFICLOGGER_PKG + ".appVersion=" + app_version,
+        "-X",
         APP_SRC_CMD_PKG + ".appDate=" + app_date,
         "-X",
         APP_SRC_CMD_PKG
@@ -359,6 +362,8 @@ def cmd_run(args, pprof=False, race=False):
     ldflags = [
         "-X",
         APP_SRC_CMD_PKG + ".appVersion=" + app_version,
+        "-X",
+        TRAFFICLOGGER_PKG + ".appVersion=" + app_version,
         "-X",
         APP_SRC_CMD_PKG + ".appDate=" + app_date,
         "-X",

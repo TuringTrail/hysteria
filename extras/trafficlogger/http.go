@@ -20,6 +20,8 @@ const (
 
 // TrafficStatsServer implements both server.TrafficLogger and http.Handler
 // to provide a simple HTTP API to get the traffic stats per user.
+var appVersion = "Unknown"
+
 type TrafficStatsServer interface {
 	server.TrafficLogger
 	http.Handler
@@ -122,6 +124,10 @@ func (s *trafficStatsServerImpl) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	}
 	if r.Method == http.MethodGet && r.URL.Path == "/dump/streams" {
 		s.getDumpStreams(w, r)
+		return
+	}
+	if r.Method == http.MethodGet && r.URL.Path == "/version" {
+		s.getVersion(w, r)
 		return
 	}
 	http.NotFound(w, r)
@@ -292,6 +298,20 @@ func (s *trafficStatsServerImpl) getDumpStreams(w http.ResponseWriter, r *http.R
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func (s *trafficStatsServerImpl) getVersion(w http.ResponseWriter, r *http.Request) {
+	payload := struct {
+		Version string `json:"version"`
+	}{Version: appVersion}
+
+	jb, err := json.Marshal(payload)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	_, _ = w.Write(jb)
 }
 
 func (s *trafficStatsServerImpl) kick(w http.ResponseWriter, r *http.Request) {
